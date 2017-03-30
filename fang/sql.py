@@ -20,7 +20,7 @@ class Sql:
         cursor.execute('SELECT * FROM HOUSE WHERE url=(?)',(url,))
         values = cursor.fetchall()
         return values
-
+    @classmethod
     def close_sql(self):
         cursor.close()
         conn.close()
