@@ -10,7 +10,7 @@ from fang.sql import Sql
 
 class FangPipeline(object):
     def process_item(self, item, spider):
-        if isinstance(item,FangItem,spider):
+        if isinstance(item,FangItem):
             url = item['url']
             ret = Sql.select_url(url)
             if len(ret)>0:
@@ -19,6 +19,8 @@ class FangPipeline(object):
             else:
                 title = item['title']
                 time = item['time']
-                loc = item['loc']
                 url = item['url']
-                Sql.insert_item(title,loc,time,url)
+                Sql.insert_item(title,time,url)
+    def close_spider(self):
+        Sql.close_sql()
+        print('close_sql')

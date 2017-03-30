@@ -21,19 +21,20 @@ class HouseSpider(scrapy.Spider):
         #     url = '{}/{}/discussion?start={}'.format(self.baseUrl,self.group,str(i*50))
         #     yield Request(url,self.parse)
     def parse(self, response):
-        print(response.text)
-        print()
         soup = BeautifulSoup(response.text,'lxml')
         ul = soup.find('ul',class_='base-list')
         li = ul.find_all('li')
+        items = []
         for a in li:
             a_last = a.find_all('a')[-1]
-            title = a_last.get('title')
+            title = a_last.get('title').replace('\xa0','')
             href = a_last.get('href')
-            time = a_last.find('span',class_='right').string
-            print('ok')
+            href = 'https://m.douban.com{}'.format(href)
+            time = a_last.find('span',class_='right').string.replace('\xa0','')
+            print('ok,{}'.format(title))
             item = FangItem()
-            item.title = str(title.replace('\xa0',''))
-            item.time = str(time.replace('\xa0',''))
-            item.url = 'https://m.douban.com{}'.format(href)
-            return item
+            item['title'] = title
+            item['time'] = time
+            item['url'] = href
+            items.append(item)
+        return items
